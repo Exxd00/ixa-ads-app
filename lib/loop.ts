@@ -25,7 +25,7 @@ export async function orchestrateLoop(intake: IntakeData): Promise<LoopResult> {
   if (!process.env.OPENAI_API_KEY && !process.env.ANTHROPIC_API_KEY) {
     const draft = fallbackDraft(intake);
     iterations.push({ n: 1, source: "fallback", draft, issues: [], reviewedByClaude: false, passed: true });
-    return { status: "passed", iterations, finalDraft: draft, aiUsed: false };
+    return { status: "passed", iterations, finalDraft: draft, aiUsed: false, dbCampaignId: null };
   }
 
   let priorIssues: RuleViolation[] | undefined;
@@ -51,10 +51,16 @@ export async function orchestrateLoop(intake: IntakeData): Promise<LoopResult> {
     });
 
     if (passed) {
-      return { status: "passed", iterations, finalDraft: draft, aiUsed: true };
+      return { status: "passed", iterations, finalDraft: draft, aiUsed: true, dbCampaignId: null };
     }
     priorIssues = issues;
   }
 
-  return { status: "needs_manual_review", iterations, finalDraft: lastDraft, aiUsed: true };
+  return {
+    status: "needs_manual_review",
+    iterations,
+    finalDraft: lastDraft,
+    aiUsed: true,
+    dbCampaignId: null,
+  };
 }

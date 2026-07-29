@@ -38,6 +38,7 @@ export interface LoopResult {
   iterations: LoopIteration[];
   finalDraft: CampaignDraft;
   aiUsed: boolean;
+  dbCampaignId: string | null;
 }
 
 export interface PushResult {
@@ -55,3 +56,15 @@ export interface StatusInfo {
 }
 
 export type WizardStep = "connect" | "describe" | "looping" | "review" | "pushing" | "done";
+
+export interface SubscriptionInfo {
+  authenticated: boolean;
+  email?: string;
+  subscription: {
+    plan: "basic" | "pro" | "agency";
+    status: "trialing" | "active" | "past_due" | "canceled" | "incomplete";
+    currentPeriodEnd: string | null;
+  } | null;
+  campaignsThisMonth: number;
+  campaignLimit: number | null;
+}
